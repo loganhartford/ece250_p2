@@ -1,55 +1,57 @@
-#include <iostream>
-#include <string>
-using namespace std;
+#include "HashTable.hpp"
+#include "FileBlock.hpp"
 
-int main()
+HashTable::HashTable(int size, bool useSeparateChaining)
+    : size(size), useSeparateChaining(useSeparateChaining), table(size, nullptr) {}
+
+HashTable::~HashTable()
 {
-    string cmd;
-    int size = 0;
-    bool type;
-    int ID;
-    int chainIndex;
-    string charString;
-
-    while (cin >> cmd)
+    for (auto &block : table)
     {
-        if (cmd == "NEW")
-        {
-            cin >> size >> type;
-
-            cout << "success" << endl;
-        }
-        else if (cmd == "STORE")
-        {
-            cin >> ID;
-            getline(cin, charString, '!');
-        }
-        else if (cmd == "SEARCH")
-        {
-            cin >> ID;
-        }
-        else if (cmd == "DELETE")
-        {
-            cin >> ID;
-        }
-        else if (cmd == "CORRUPT")
-        {
-            cin >> ID;
-            getline(cin, charString, '!');
-        }
-        else if (cmd == "VALIDATE")
-        {
-            cin >> ID;
-        }
-        else if (cmd == "PRINT")
-        {
-            cin >> chainIndex;
-        }
-        else if (cmd == "EXIT")
-        {
-            return 0;
-        }
+        delete block;
     }
+}
 
-    return 0;
+int HashTable::primaryHash(int key) const
+{
+    return key % size;
+}
+
+int HashTable::secondaryHash(int key) const
+{
+    int hashValue = (key / size) % size;
+    return (hashValue % 2 == 0) ? hashValue + 1 : hashValue;
+}
+
+bool HashTable::store(int id, const std::string &data)
+{
+    int index = primaryHash(id);
+
+    if (!useSeparateChaining)
+    {
+        int step = secondaryHash(id);
+        for (int i = 0; i < size; ++i)
+        {
+            int newIndex = (index + i * step) % size;
+            if (table[newIndex] == nullptr)
+            {
+                table[newIndex] = new fileBlock(id, data);
+                return true;
+            }
+            else if (table[newIndex]->getID() == id)
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+    else
+    {
+        if (table[index] == nullptr)
+        {
+            table[index] = new fileBlock(id, data);
+            return true;
+        }
+        return false;
+    }
 }
