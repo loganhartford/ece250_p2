@@ -10,7 +10,7 @@ class HashTable
 private:
     int size;
     bool useSeparateChaining;
-    std::vector<void *> table;
+    std::vector<void *> table; // void* is used to store either Chain* or FileBlock*
 
     int primaryHash(int key) const;
     int secondaryHash(int key) const;

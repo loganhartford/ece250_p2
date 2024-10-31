@@ -15,6 +15,7 @@ Chain::~Chain()
 
 bool Chain::insert(int id, const std::string &payload)
 {
+    // Don't insert if the ID already exists
     if (find(id) != nullptr)
     {
         return false;

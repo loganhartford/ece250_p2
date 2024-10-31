@@ -4,9 +4,11 @@
 FileBlock::FileBlock(int id, const std::string &data)
     : ID(id), payload(500, 0), checksum(0)
 {
+    // Copy charstring into the payload
     std::size_t length = std::min(data.size(), payload.size());
     std::copy(data.begin(), data.begin() + length, payload.begin());
 
+    // Compute and update checksum
     checksum = calculateChecksum();
 }
 
@@ -44,7 +46,7 @@ bool FileBlock::validateData() const
     return currentChecksum == checksum;
 }
 
-int FileBlock::getID()
+int FileBlock::getID() const
 {
     return ID;
 }

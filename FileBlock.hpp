@@ -19,7 +19,7 @@ public:
 
     void corruptData(const std::string &newData);
     bool validateData() const;
-    int getID();
+    int getID() const;
 };
 
 #endif
