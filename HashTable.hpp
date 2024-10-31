@@ -20,6 +20,7 @@ public:
     ~HashTable();
 
     bool store(int id, const std::string &data);
+    int search(int id) const;
 };
 
 #endif

@@ -40,6 +40,15 @@ int main()
         else if (cmd == "SEARCH")
         {
             cin >> ID;
+            int foundIndex = table->search(ID);
+            if (foundIndex == -1)
+            {
+                cout << "not found" << endl;
+            }
+            else
+            {
+                cout << "found " << ID << " in " << foundIndex << endl;
+            }
         }
         else if (cmd == "DELETE")
         {

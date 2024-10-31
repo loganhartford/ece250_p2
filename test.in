@@ -2,4 +2,7 @@ NEW 2 0
 STORE 42 Hello, world!
 STORE 50 A collision!
 STORE 49 A collision!
+SEARCH 42
+SEARCH 50
+SEARCH 49
 EXIT

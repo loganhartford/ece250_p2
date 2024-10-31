@@ -73,3 +73,38 @@ bool HashTable::store(int id, const std::string &data)
         return chain->insert(id, data);
     }
 }
+
+int HashTable::search(int id) const
+{
+    int index = primaryHash(id);
+
+    if (!useSeparateChaining)
+    {
+        int step = secondaryHash(id);
+        for (int i = 0; i < size; ++i)
+        {
+            int newIndex = (index + i * step) % size;
+            if (table[newIndex] == nullptr)
+            {
+                return -1;
+            }
+            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            {
+                return newIndex;
+            }
+        }
+        return -1;
+    }
+    else
+    {
+        Chain *chain = static_cast<Chain *>(table[index]);
+        if (chain->find(id) != nullptr)
+        {
+            return index;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+}
