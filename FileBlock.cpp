@@ -1,7 +1,7 @@
 #include "FileBlock.hpp"
 #include <algorithm> // For std::copy
 
-fileBlock::fileBlock(int id, const std::string &data)
+FileBlock::FileBlock(int id, const std::string &data)
     : ID(id), payload(500, 0), checksum(0)
 {
     std::size_t length = std::min(data.size(), payload.size());
@@ -10,11 +10,11 @@ fileBlock::fileBlock(int id, const std::string &data)
     checksum = calculateChecksum();
 }
 
-fileBlock::~fileBlock()
+FileBlock::~FileBlock()
 {
 }
 
-int fileBlock::calculateChecksum()
+int FileBlock::calculateChecksum()
 {
     int checksum = 0;
     for (char byte : payload)
@@ -24,7 +24,7 @@ int fileBlock::calculateChecksum()
     return checksum % 256;
 }
 
-void fileBlock::corruptData(const std::string &newData)
+void FileBlock::corruptData(const std::string &newData)
 {
     // Fill the payload with 0s
     std::fill(payload.begin(), payload.end(), 0);
@@ -33,7 +33,7 @@ void fileBlock::corruptData(const std::string &newData)
     std::copy(newData.begin(), newData.begin() + length, payload.begin());
 }
 
-bool fileBlock::validateData() const
+bool FileBlock::validateData() const
 {
     int currentChecksum = 0;
     for (char byte : payload)
@@ -44,7 +44,7 @@ bool fileBlock::validateData() const
     return currentChecksum == checksum;
 }
 
-int fileBlock::getID()
+int FileBlock::getID()
 {
     return ID;
 }

@@ -1,14 +1,36 @@
 #include "HashTable.hpp"
 #include "FileBlock.hpp"
+#include "Chain.hpp"
 
 HashTable::HashTable(int size, bool useSeparateChaining)
-    : size(size), useSeparateChaining(useSeparateChaining), table(size, nullptr) {}
+    : size(size), useSeparateChaining(useSeparateChaining)
+{
+    if (useSeparateChaining)
+    {
+        table.resize(size, nullptr);
+        for (int i = 0; i < size; ++i)
+        {
+            table[i] = new Chain();
+        }
+    }
+    else
+    {
+        table.resize(size, nullptr);
+    }
+}
 
 HashTable::~HashTable()
 {
-    for (auto &block : table)
+    for (auto &entry : table)
     {
-        delete block;
+        if (useSeparateChaining)
+        {
+            delete static_cast<Chain *>(entry);
+        }
+        else
+        {
+            delete static_cast<FileBlock *>(entry);
+        }
     }
 }
 
@@ -35,10 +57,10 @@ bool HashTable::store(int id, const std::string &data)
             int newIndex = (index + i * step) % size;
             if (table[newIndex] == nullptr)
             {
-                table[newIndex] = new fileBlock(id, data);
+                table[newIndex] = new FileBlock(id, data);
                 return true;
             }
-            else if (table[newIndex]->getID() == id)
+            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
             {
                 return false;
             }
@@ -47,11 +69,7 @@ bool HashTable::store(int id, const std::string &data)
     }
     else
     {
-        if (table[index] == nullptr)
-        {
-            table[index] = new fileBlock(id, data);
-            return true;
-        }
-        return false;
+        Chain *chain = static_cast<Chain *>(table[index]);
+        return chain->insert(id, data);
     }
 }

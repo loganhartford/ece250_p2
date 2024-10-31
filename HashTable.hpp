@@ -10,7 +10,7 @@ class HashTable
 private:
     int size;
     bool useSeparateChaining;
-    std::vector<fileBlock *> table;
+    std::vector<void *> table;
 
     int primaryHash(int key) const;
     int secondaryHash(int key) const;

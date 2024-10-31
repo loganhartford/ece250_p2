@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-class fileBlock
+class FileBlock
 {
 private:
     int ID;
@@ -14,8 +14,8 @@ private:
     int calculateChecksum();
 
 public:
-    fileBlock(int id, const std::string &data = "");
-    ~fileBlock();
+    FileBlock(int id, const std::string &data = "");
+    ~FileBlock();
 
     void corruptData(const std::string &newData);
     bool validateData() const;
