@@ -53,6 +53,15 @@ int main()
         else if (cmd == "DELETE")
         {
             cin >> ID;
+            bool removedSuccess = table->remove(ID);
+            if (removedSuccess)
+            {
+                cout << "success" << endl;
+            }
+            else
+            {
+                cout << "failure" << endl;
+            }
         }
         else if (cmd == "CORRUPT")
         {

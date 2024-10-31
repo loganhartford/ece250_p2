@@ -84,7 +84,7 @@ int HashTable::search(int id) const
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
-            if (table[newIndex] == nullptr)
+            if (table[newIndex] == nullptr) // ID is not in the table
             {
                 return -1;
             }
@@ -106,5 +106,35 @@ int HashTable::search(int id) const
         {
             return -1;
         }
+    }
+}
+
+bool HashTable::remove(int id)
+{
+    int index = primaryHash(id);
+
+    if (!useSeparateChaining)
+    {
+        int step = secondaryHash(id);
+        for (int i = 0; i < size; ++i)
+        {
+            int newIndex = (index + i * step) % size;
+            if (table[newIndex] == nullptr) // ID is not in the table
+            {
+                return false;
+            }
+            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            {
+                delete static_cast<FileBlock *>(table[newIndex]);
+                table[newIndex] = nullptr;
+                return true;
+            }
+        }
+        return false;
+    }
+    else
+    {
+        Chain *chain = static_cast<Chain *>(table[index]);
+        return chain->remove(id);
     }
 }
