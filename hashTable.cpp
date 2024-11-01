@@ -154,7 +154,7 @@ bool HashTable::remove(int id)
                 return true;
             }
         }
-        return false; // ID not found
+        return false;
     }
     else
     {
