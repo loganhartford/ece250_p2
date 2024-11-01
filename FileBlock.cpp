@@ -2,8 +2,11 @@
 #include <algorithm> // For std::copy
 
 FileBlock::FileBlock(int id, const std::string &data)
-    : ID(id), payload(500, 0), checksum(0)
 {
+    ID = id;
+    payload.resize(500, 0);
+    checksum = 0;
+
     // Copy charstring into the payload
     std::size_t length = std::min(data.size(), payload.size());
     std::copy(data.begin(), data.begin() + length, payload.begin());

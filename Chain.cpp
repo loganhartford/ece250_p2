@@ -1,6 +1,9 @@
 #include "Chain.hpp"
 
-Chain::Chain() : head(nullptr) {}
+Chain::Chain()
+{
+    head = nullptr;
+}
 
 Chain::~Chain()
 {

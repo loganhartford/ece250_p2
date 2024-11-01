@@ -3,8 +3,10 @@
 #include "Chain.hpp"
 
 HashTable::HashTable(int size, bool useSeparateChaining)
-    : size(size), useSeparateChaining(useSeparateChaining)
 {
+    this->size = size;
+    this->useSeparateChaining = useSeparateChaining;
+
     if (useSeparateChaining)
     {
         table.resize(size, nullptr);
@@ -21,15 +23,15 @@ HashTable::HashTable(int size, bool useSeparateChaining)
 
 HashTable::~HashTable()
 {
-    for (auto &entry : table)
+    for (int i = 0; i < size; ++i)
     {
         if (useSeparateChaining)
         {
-            delete static_cast<Chain *>(entry);
+            delete static_cast<Chain *>(table[i]);
         }
         else
         {
-            delete static_cast<FileBlock *>(entry);
+            delete static_cast<FileBlock *>(table[i]);
         }
     }
 }
