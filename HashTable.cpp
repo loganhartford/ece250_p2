@@ -41,12 +41,12 @@ HashTable::~HashTable()
     }
 }
 
-int HashTable::primaryHash(int key) const
+int HashTable::singleHash(int key) const
 {
     return key % size;
 }
 
-int HashTable::secondaryHash(int key) const
+int HashTable::doubleHash(int key) const
 {
     int hashValue = (key / size) % size;
     return (hashValue % 2 == 0) ? hashValue + 1 : hashValue;
@@ -54,11 +54,11 @@ int HashTable::secondaryHash(int key) const
 
 bool HashTable::store(int id, const std::string &data)
 {
-    int index = primaryHash(id);
+    int index = singleHash(id);
 
     if (!useSeparateChaining)
     {
-        int step = secondaryHash(id);
+        int step = doubleHash(id);
         int firstTombstone = -1;
 
         for (int i = 0; i < size; ++i)
@@ -97,11 +97,11 @@ bool HashTable::store(int id, const std::string &data)
 
 int HashTable::search(int id) const
 {
-    int index = primaryHash(id);
+    int index = singleHash(id);
 
     if (!useSeparateChaining)
     {
-        int step = secondaryHash(id);
+        int step = doubleHash(id);
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
@@ -134,11 +134,11 @@ int HashTable::search(int id) const
 
 bool HashTable::remove(int id)
 {
-    int index = primaryHash(id);
+    int index = singleHash(id);
 
     if (!useSeparateChaining)
     {
-        int step = secondaryHash(id);
+        int step = doubleHash(id);
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
@@ -165,11 +165,11 @@ bool HashTable::remove(int id)
 
 bool HashTable::corrupt(int id, const std::string &newData)
 {
-    int index = primaryHash(id);
+    int index = singleHash(id);
 
     if (!useSeparateChaining)
     {
-        int step = secondaryHash(id);
+        int step = doubleHash(id);
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
@@ -201,11 +201,11 @@ bool HashTable::corrupt(int id, const std::string &newData)
 
 int HashTable::validate(int id) const
 {
-    int index = primaryHash(id);
+    int index = singleHash(id);
 
     if (!useSeparateChaining)
     {
-        int step = secondaryHash(id);
+        int step = doubleHash(id);
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;

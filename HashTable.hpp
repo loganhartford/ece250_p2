@@ -11,8 +11,8 @@ private:
     vector<void *> table; // void* is used to store either Chain* or FileBlock*
     static FileBlock *const TOMBSTONE;
 
-    int primaryHash(int key) const;
-    int secondaryHash(int key) const;
+    int singleHash(int key) const;
+    int doubleHash(int key) const;
 
 public:
     HashTable(int size, bool useSeparateChaining);
