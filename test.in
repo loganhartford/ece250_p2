@@ -1,7 +1,9 @@
-NEW 2 0
+NEW 2 1
 STORE 42 Hello, world!
-VALIDATE 42
-CORRUPT 42 corruption12!
-VALIDATE 42
-VALIDATE 50
+STORE 43 Hello, world!
+STORE 44 Hello, world!
+STORE 1 Hello, world!
+STORE 89 Hello, world!
+PRINT 0
+PRINT 1
 EXIT

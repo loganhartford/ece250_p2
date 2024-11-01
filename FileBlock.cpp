@@ -1,15 +1,14 @@
 #include "FileBlock.hpp"
-#include <algorithm> // For std::copy
 
-FileBlock::FileBlock(int id, const std::string &data)
+FileBlock::FileBlock(int id, const string &data)
 {
     ID = id;
     payload.resize(500, 0);
     checksum = 0;
 
     // Copy charstring into the payload
-    std::size_t length = std::min(data.size(), payload.size());
-    std::copy(data.begin(), data.begin() + length, payload.begin());
+    size_t length = min(data.size(), payload.size());
+    copy(data.begin(), data.begin() + length, payload.begin());
 
     // Compute and update checksum
     checksum = calculateChecksum();
@@ -29,13 +28,13 @@ int FileBlock::calculateChecksum()
     return checksum % 256;
 }
 
-void FileBlock::corruptData(const std::string &newData)
+void FileBlock::corruptData(const string &newData)
 {
     // Fill the payload with 0s
-    std::fill(payload.begin(), payload.end(), 0);
+    fill(payload.begin(), payload.end(), 0);
     // Copy the new data into the payload, but don't compute checksum
-    std::size_t length = std::min(newData.size(), payload.size());
-    std::copy(newData.begin(), newData.begin() + length, payload.begin());
+    size_t length = min(newData.size(), payload.size());
+    copy(newData.begin(), newData.begin() + length, payload.begin());
 }
 
 bool FileBlock::validateData() const

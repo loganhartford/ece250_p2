@@ -97,12 +97,21 @@ int main()
         else if (cmd == "PRINT")
         {
             cin >> chainIndex;
+            table->print(chainIndex);
         }
         else if (cmd == "EXIT")
         {
+            if (table)
+            {
+                delete table;
+            }
             return 0;
         }
     }
 
+    if (table)
+    {
+        delete table;
+    }
     return 0;
 }

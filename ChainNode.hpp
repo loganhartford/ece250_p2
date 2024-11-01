@@ -6,5 +6,5 @@ public:
     FileBlock data;
     ChainNode *next;
 
-    ChainNode(int id, const std::string &payload);
+    ChainNode(int id, const string &payload);
 };

@@ -12,9 +12,11 @@ public:
     Chain();
     ~Chain();
 
-    bool insert(int id, const std::string &payload);
+    bool insert(int id, const string &payload);
     ChainNode *find(int id) const;
     bool remove(int id);
+    void printChain() const;
+    bool isEmpty() const;
 };
 
 #endif

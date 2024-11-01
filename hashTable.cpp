@@ -47,7 +47,7 @@ int HashTable::secondaryHash(int key) const
     return (hashValue % 2 == 0) ? hashValue + 1 : hashValue;
 }
 
-bool HashTable::store(int id, const std::string &data)
+bool HashTable::store(int id, const string &data)
 {
     int index = primaryHash(id);
 
@@ -141,7 +141,7 @@ bool HashTable::remove(int id)
     }
 }
 
-bool HashTable::corrupt(int id, const std::string &newData)
+bool HashTable::corrupt(int id, const string &newData)
 {
     int index = primaryHash(id);
 
@@ -206,5 +206,18 @@ int HashTable::validate(int id) const
             return node->data.validateData();
         }
         return -1;
+    }
+}
+
+void HashTable::print(int index) const
+{
+    Chain *chain = static_cast<Chain *>(table[index]);
+    if (chain == nullptr || chain->isEmpty())
+    {
+        cout << "chain is empty" << endl;
+    }
+    else
+    {
+        chain->printChain();
     }
 }

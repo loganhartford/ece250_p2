@@ -1,23 +1,26 @@
 #ifndef FILEBLOCK_HPP
 #define FILEBLOCK_HPP
 
-#include <vector>
+#include <algorithm> // For copy
+#include <iostream>
 #include <string>
+#include <vector>
+using namespace std;
 
 class FileBlock
 {
 private:
     int ID;
-    std::vector<char> payload;
+    vector<char> payload;
     int checksum;
 
     int calculateChecksum();
 
 public:
-    FileBlock(int id, const std::string &data = "");
+    FileBlock(int id, const string &data = "");
     ~FileBlock();
 
-    void corruptData(const std::string &newData);
+    void corruptData(const string &newData);
     bool validateData() const;
     int getID() const;
 };

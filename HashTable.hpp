@@ -1,8 +1,6 @@
 #ifndef HASHTABLE_HPP
 #define HASHTABLE_HPP
 
-#include <vector>
-#include <optional>
 #include "FileBlock.hpp"
 
 class HashTable
@@ -10,7 +8,7 @@ class HashTable
 private:
     int size;
     bool useSeparateChaining;
-    std::vector<void *> table; // void* is used to store either Chain* or FileBlock*
+    vector<void *> table; // void* is used to store either Chain* or FileBlock*
 
     int primaryHash(int key) const;
     int secondaryHash(int key) const;
@@ -19,11 +17,12 @@ public:
     HashTable(int size, bool useSeparateChaining);
     ~HashTable();
 
-    bool store(int id, const std::string &data);
+    bool store(int id, const string &data);
     int search(int id) const;
     bool remove(int id);
-    bool corrupt(int id, const std::string &newData);
+    bool corrupt(int id, const string &newData);
     int validate(int id) const;
+    void print(int index) const;
 };
 
 #endif
