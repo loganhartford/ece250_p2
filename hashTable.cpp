@@ -2,6 +2,8 @@
 #include "FileBlock.hpp"
 #include "Chain.hpp"
 
+FileBlock *const HashTable::TOMBSTONE = reinterpret_cast<FileBlock *>(-1);
+
 HashTable::HashTable(int size, bool useSeparateChaining)
 {
     this->size = size;
@@ -31,7 +33,10 @@ HashTable::~HashTable()
         }
         else
         {
-            delete static_cast<FileBlock *>(table[i]);
+            if (table[i] != nullptr && table[i] != TOMBSTONE)
+            {
+                delete static_cast<FileBlock *>(table[i]);
+            }
         }
     }
 }
@@ -47,20 +52,34 @@ int HashTable::secondaryHash(int key) const
     return (hashValue % 2 == 0) ? hashValue + 1 : hashValue;
 }
 
-bool HashTable::store(int id, const string &data)
+bool HashTable::store(int id, const std::string &data)
 {
     int index = primaryHash(id);
 
     if (!useSeparateChaining)
     {
         int step = secondaryHash(id);
+        int firstTombstone = -1;
+
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
+
             if (table[newIndex] == nullptr)
             {
+                if (firstTombstone != -1)
+                {
+                    newIndex = firstTombstone;
+                }
                 table[newIndex] = new FileBlock(id, data);
                 return true;
+            }
+            else if (table[newIndex] == TOMBSTONE)
+            {
+                if (firstTombstone == -1)
+                {
+                    firstTombstone = newIndex;
+                }
             }
             else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
             {
@@ -86,14 +105,16 @@ int HashTable::search(int id) const
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
+
             if (table[newIndex] == nullptr) // ID is not in the table
             {
                 return -1;
             }
-            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            else if (table[newIndex] != TOMBSTONE && static_cast<FileBlock *>(table[newIndex])->getID() == id)
             {
                 return newIndex;
             }
+            // If table[newIndex] is a tombstone, continue searching
         }
         return -1;
     }
@@ -121,18 +142,19 @@ bool HashTable::remove(int id)
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
-            if (table[newIndex] == nullptr) // ID is not in the table
+
+            if (table[newIndex] == nullptr)
             {
-                return false;
+                return false; // ID is not in the table
             }
-            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            else if (table[newIndex] != TOMBSTONE && static_cast<FileBlock *>(table[newIndex])->getID() == id)
             {
                 delete static_cast<FileBlock *>(table[newIndex]);
-                table[newIndex] = nullptr;
+                table[newIndex] = TOMBSTONE;
                 return true;
             }
         }
-        return false;
+        return false; // ID not found
     }
     else
     {
@@ -141,7 +163,7 @@ bool HashTable::remove(int id)
     }
 }
 
-bool HashTable::corrupt(int id, const string &newData)
+bool HashTable::corrupt(int id, const std::string &newData)
 {
     int index = primaryHash(id);
 
@@ -151,11 +173,12 @@ bool HashTable::corrupt(int id, const string &newData)
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
+
             if (table[newIndex] == nullptr)
             {
                 return false;
             }
-            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            else if (table[newIndex] != TOMBSTONE && static_cast<FileBlock *>(table[newIndex])->getID() == id)
             {
                 static_cast<FileBlock *>(table[newIndex])->corruptData(newData);
                 return true;
@@ -186,11 +209,12 @@ int HashTable::validate(int id) const
         for (int i = 0; i < size; ++i)
         {
             int newIndex = (index + i * step) % size;
+
             if (table[newIndex] == nullptr)
             {
                 return -1;
             }
-            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            else if (table[newIndex] != TOMBSTONE && static_cast<FileBlock *>(table[newIndex])->getID() == id)
             {
                 return static_cast<FileBlock *>(table[newIndex])->validateData();
             }
