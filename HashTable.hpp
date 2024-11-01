@@ -19,9 +19,10 @@ public:
     HashTable(int size, bool useSeparateChaining);
     ~HashTable();
 
-    bool store(int id, const std::string &data);
+        bool store(int id, const std::string &data);
     int search(int id) const;
     bool remove(int id);
+    bool corrupt(int id, const std::string &newData);
 };
 
 #endif

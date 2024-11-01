@@ -67,6 +67,15 @@ int main()
         {
             cin >> ID;
             getline(cin, charString, '!');
+            bool corruptedSuccess = table->corrupt(ID, charString);
+            if (corruptedSuccess)
+            {
+                cout << "success" << endl;
+            }
+            else
+            {
+                cout << "failure" << endl;
+            }
         }
         else if (cmd == "VALIDATE")
         {
