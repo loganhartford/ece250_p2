@@ -175,3 +175,36 @@ bool HashTable::corrupt(int id, const std::string &newData)
         return false;
     }
 }
+
+int HashTable::validate(int id) const
+{
+    int index = primaryHash(id);
+
+    if (!useSeparateChaining)
+    {
+        int step = secondaryHash(id);
+        for (int i = 0; i < size; ++i)
+        {
+            int newIndex = (index + i * step) % size;
+            if (table[newIndex] == nullptr)
+            {
+                return -1;
+            }
+            else if (static_cast<FileBlock *>(table[newIndex])->getID() == id)
+            {
+                return static_cast<FileBlock *>(table[newIndex])->validateData();
+            }
+        }
+        return -1;
+    }
+    else
+    {
+        Chain *chain = static_cast<Chain *>(table[index]);
+        ChainNode *node = chain->find(id);
+        if (node != nullptr)
+        {
+            return node->data.validateData();
+        }
+        return -1;
+    }
+}

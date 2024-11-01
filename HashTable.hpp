@@ -23,6 +23,7 @@ public:
     int search(int id) const;
     bool remove(int id);
     bool corrupt(int id, const std::string &newData);
+    int validate(int id) const;
 };
 
 #endif

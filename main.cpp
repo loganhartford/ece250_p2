@@ -80,6 +80,19 @@ int main()
         else if (cmd == "VALIDATE")
         {
             cin >> ID;
+            int validated = table->validate(ID);
+            if (validated == 1)
+            {
+                cout << "valid" << endl;
+            }
+            else if (validated == 0)
+            {
+                cout << "invalid" << endl;
+            }
+            else if (validated == -1)
+            {
+                cout << "failure" << endl;
+            }
         }
         else if (cmd == "PRINT")
         {
